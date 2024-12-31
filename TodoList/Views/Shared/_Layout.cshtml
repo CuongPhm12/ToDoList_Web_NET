@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - TodoList</title>
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/TodoList.styles.css" asp-append-version="true" />
+
+</head>
+<body>
+
+	<div class="container">
+		<main role="main" class="pb-3">
+			@RenderBody()
+		</main>
+	</div>
+	<script>
+		function finishTask(id) {
+			$.ajax({
+				url: '/Home/Finish', // URL to the Finish action
+				type: 'POST',
+				data: { id: id },
+				success: function (response) {
+					if (response.success) {
+						// Update the row dynamically
+						$('#status-' + id).text('Completed');
+						$('#task-' + id).addClass('table-success');
+
+						// Optionally remove the "FINISHED" button
+						$('#task-' + id + ' .btn-success').remove();
+					} else {
+						alert(response.message || 'Failed to complete the task.');
+					}
+				},
+				error: function () {
+					alert('An error occurred while completing the task.');
+				}
+			});
+		}
+
+			 function deleteTask(id) {
+			$.ajax({
+				url: '/Home/Delete', // URL to the Delete action
+				type: 'POST',
+				data: { id: id },
+				success: function (response) {
+					if (response.success) {
+						// Remove the row dynamically
+						$('#task-' + id).remove();
+					} else {
+						alert(response.message || 'Failed to delete the task.');
+					}
+				},
+				error: function () {
+					alert('An error occurred while deleting the task.');
+				}
+			});
+
+		}
+	</script>
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	@* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
+	@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

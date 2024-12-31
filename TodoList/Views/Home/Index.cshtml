@@ -1,0 +1,59 @@
+﻿@model TodoList.Models.TodoListViewModel
+@{
+	ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+	<h1 class="display-5">To Do App</h1>
+
+	<form action="/Home/Add" method="post">
+		<div class="form-group d-flex justify-content-center align-items-center">
+			<input class="form-control mr-2" name="Text" placeholder="Enter a task here" style="flex:1; max-width: 400px;" />
+			<button type="submit" class="btn btn-primary mr-2">SAVE</button>
+			<a href="/" class="btn btn-secondary">GET TASKS</a>
+		</div>
+	</form>
+</div>
+
+
+<div class="mt-5">
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>No.</th>
+				<th>Todo item</th>
+				<th>Status</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			@if (Model.Items != null && Model.Items.Any())
+			{
+				@foreach (var task in Model.Items)
+				{
+					<tr id="task-@task.ID" class="@(task.IsComplete ? "table-success" : "")">
+						<td>@task.ID</td>
+						<td>@task.Text</td>
+						<td id="status-@task.ID">@(task.IsComplete ? "Completed" : "In progress")</td>
+						<td>
+							@* <a href="Home/Delete/@task.ID" class="btn btn-danger btn-sm">DELETE</a> *@
+							<button class="btn btn-danger btn-sm" onclick="deleteTask(@task.ID)">DELETE</button>
+							@if (!task.IsComplete)
+							{
+								<button class="btn btn-success btn-sm" onclick="finishTask(@task.ID)">FINISHED</button>
+							}
+							@* <a href="Home/Finish/@task.ID" class="btn btn-success btn-sm">FINISHED</a> *@
+						</td>
+					</tr>
+				}
+			}
+			else
+			{
+				<tr>
+					<td colspan="4">No tasks found.</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+
